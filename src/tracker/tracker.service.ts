@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddTaskInput } from './dto/addTask.input';
 import { Cache } from 'cache-manager';
-import { Task } from './models/task.model';
+import { Status, Task } from './models/task.model';
 
 @Injectable()
 export class TrackerService {
@@ -18,7 +18,7 @@ export class TrackerService {
   async getFinishedTasks() {
     return await this.prisma.task.findMany({
       where: {
-        status: 'STOPPED',
+        status: Status.STOPPED,
       },
     });
   }
@@ -40,7 +40,7 @@ export class TrackerService {
           id: curTask.id,
         },
         data: {
-          status: 'STOPPED',
+          status: Status.STOPPED,
           timer: {
             update: {
               finishTime: curTime,
@@ -61,7 +61,7 @@ export class TrackerService {
     const newTask = await this.prisma.task.create({
       data: {
         ...data,
-        status: 'ACTIVE',
+        status: Status.ACTIVE,
         timer: {
           create: {
             startTime: curTime,

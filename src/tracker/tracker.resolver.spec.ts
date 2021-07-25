@@ -10,7 +10,7 @@ describe('TrackerResolver', () => {
   const timerInfo = {
     id: 1,
     startTime: new Date(),
-    finishTime: undefined,
+    finishTime: null,
   };
 
   const timer: Timer = {

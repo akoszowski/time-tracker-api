@@ -9,7 +9,7 @@ export class Timer {
   startTime: Date;
 
   @Field({ nullable: true })
-  finishTime?: Date;
+  finishTime: Date | null;
 
   @Field((type) => Int)
   taskId: number;

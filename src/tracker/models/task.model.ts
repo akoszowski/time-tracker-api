@@ -20,7 +20,7 @@ export class Task {
   name: string;
 
   @Field({ nullable: true })
-  description?: string;
+  description: string | null;
 
   @Field()
   status: Status;
