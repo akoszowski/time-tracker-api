@@ -3,6 +3,7 @@ import { TrackerResolver } from './tracker.resolver';
 import { TrackerService } from './tracker.service';
 import { Status, Task } from './models/task.model';
 import { Timer } from './models/timer.model';
+import { BadRequestException } from '@nestjs/common';
 
 describe('TrackerResolver', () => {
   let resolver: TrackerResolver;
@@ -106,7 +107,9 @@ describe('TrackerResolver', () => {
   });
 
   it('should return currently running task - null case', async () => {
-    expect(await resolver.fetchCurrentTask()).toEqual(null);
+    await expect(resolver.fetchCurrentTask()).rejects.toThrow(
+      BadRequestException,
+    );
 
     expect(mockTrackerService.getCurrentTask).toHaveBeenCalled();
   });
@@ -120,7 +123,9 @@ describe('TrackerResolver', () => {
   });
 
   it('should return already finished tasks - null case', async () => {
-    expect(await resolver.getFinishedTasks()).toEqual(null);
+    await expect(resolver.getFinishedTasks()).rejects.toThrow(
+      BadRequestException,
+    );
 
     expect(mockTrackerService.getFinishedTasks).toHaveBeenCalled();
   });
@@ -138,7 +143,9 @@ describe('TrackerResolver', () => {
   });
 
   it('should return stopped Task - null case', async () => {
-    expect(await resolver.stopCurrentTask()).toEqual(null);
+    await expect(resolver.stopCurrentTask()).rejects.toThrow(
+      BadRequestException,
+    );
 
     expect(mockTrackerService.stopCurrentTask).toHaveBeenCalled();
   });
