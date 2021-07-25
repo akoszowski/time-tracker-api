@@ -19,8 +19,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docker:db": "docker-compose -f docker-compose.db.yml up -d",
     "migrate:deploy": "npx prisma migrate deploy --preview-feature",
-    "docker:db": "docker-compose -f docker-compose.db.yml up -d"
+    "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
     "@apollo/gateway": "^0.33.0",
