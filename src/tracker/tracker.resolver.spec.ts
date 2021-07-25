@@ -7,10 +7,11 @@ import { Timer } from './models/timer.model';
 describe('TrackerResolver', () => {
   let resolver: TrackerResolver;
 
+  const curTime = new Date();
+
   const timerInfo = {
     id: 1,
-    startTime: new Date(),
-    finishTime: null,
+    startTime: new Date(2021, 6, 24),
   };
 
   const timer: Timer = {
@@ -47,7 +48,7 @@ describe('TrackerResolver', () => {
       timer: {
         id: Math.random(),
         startTime: new Date(2021, 6, 24),
-        finishTime: new Date(),
+        finishTime: curTime,
         taskId: 6,
       },
     },
@@ -65,7 +66,10 @@ describe('TrackerResolver', () => {
       .mockResolvedValueOnce(null),
 
     timer: jest.fn().mockImplementation((taskId) => {
-      return Promise.resolve({ ...timerInfo, taskId: taskId });
+      return Promise.resolve({
+        ...timerInfo,
+        taskId: taskId,
+      });
     }),
 
     stopCurrentTask: jest
@@ -80,6 +84,7 @@ describe('TrackerResolver', () => {
         status: Status.ACTIVE,
         timer: {
           ...timerInfo,
+          finishedTime: curTime,
           statusId: 10,
         },
       };
@@ -156,6 +161,7 @@ describe('TrackerResolver', () => {
       status: Status.ACTIVE,
       timer: {
         ...timerInfo,
+        finishedTime: curTime,
         statusId: 10,
       },
     });

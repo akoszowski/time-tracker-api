@@ -11,5 +11,5 @@ export class AddTaskInput {
   @Field({ nullable: true })
   @IsOptional()
   @MaxLength(400)
-  description: string | null;
+  description?: string;
 }

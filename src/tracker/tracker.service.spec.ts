@@ -34,7 +34,7 @@ describe('TrackerService', () => {
   });
 
   it('should return finished tasks', async () => {
-    const finishedTasks: Task[] = [
+    const finishedTasks = [
       {
         id: 5,
         name: 'First finished task',
@@ -99,21 +99,20 @@ describe('TrackerService', () => {
   });
 
   it('should add new task and cache it, finally stop it and check if removed from cache', async () => {
-    const data: AddTaskInput = {
+    const data = {
       name: 'New Task',
       description: 'Some description',
     };
     const lastTime = new Date(2021, 6, 24);
     const curTime = new Date();
 
-    const curTask: Task = {
+    const curTask = {
       id: 1,
       ...data,
       status: Status.ACTIVE,
       timer: {
         id: Math.random(),
         startTime: lastTime,
-        finishTime: null,
         taskId: 1,
       },
     };
@@ -126,10 +125,17 @@ describe('TrackerService', () => {
 
     expect(await service.getCurrentTask()).toEqual(curTask);
 
-    const stoppedTask = Object.assign({}, curTask);
-    stoppedTask.status = Status.STOPPED;
-    stoppedTask.timer = Object.assign({}, curTask.timer);
-    stoppedTask.timer.finishTime = curTime;
+    const stoppedTask = {
+      id: 1,
+      ...data,
+      status: Status.STOPPED,
+      timer: {
+        id: curTask.timer.id,
+        startTime: curTask.timer.startTime,
+        finishTime: curTime,
+        taskId: curTask.timer.taskId,
+      },
+    };
 
     prismaMock.task.update.mockResolvedValue(stoppedTask);
 
