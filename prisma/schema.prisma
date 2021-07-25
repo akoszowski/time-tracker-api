@@ -21,7 +21,7 @@ model Task {
 model Timer {
   id            Int         @id @default(autoincrement())
   startTime     DateTime
-  finishTime    DateTime
+  finishTime    DateTime?
   task          Task        @relation (fields: [taskId], references: [id])
   taskId        Int
 }
