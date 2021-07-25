@@ -14,7 +14,6 @@ import { AppResolver } from './app.resolver';
     PrismaModule,
     TrackerModule,
   ],
-  controllers: [],
   providers: [AppResolver],
 })
 export class AppModule {}

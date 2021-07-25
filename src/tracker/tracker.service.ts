@@ -1,17 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddTaskInput } from './dto/addTask.input';
+import { Cache } from 'cache-manager';
+import { Task } from './models/task.model';
 
 @Injectable()
 export class TrackerService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async getCurrentTask() {
-    return await this.prisma.task.findFirst({
-      where: {
-        status: 'ACTIVE',
-      },
-    });
+    return await this.cacheManager.get('curTask');
   }
 
   async getFinishedTasks() {
@@ -25,16 +26,16 @@ export class TrackerService {
   async timer(id) {
     return await this.prisma.timer.findFirst({
       where: {
-        taskId:id,
+        taskId: id,
       },
     });
   }
 
   async stopCurrentTask(curTime: Date) {
-    const curTask = await this.getCurrentTask();
+    const curTask: Task | undefined = await this.cacheManager.get('curTask');
 
     if (curTask) {
-      return await this.prisma.task.update({
+      const updatedTask = await this.prisma.task.update({
         where: {
           id: curTask.id,
         },
@@ -47,13 +48,17 @@ export class TrackerService {
           },
         },
       });
+
+      await this.cacheManager.del('curTask');
+
+      return updatedTask;
     }
 
     return null;
   }
 
   async addNewTask(data: AddTaskInput, curTime: Date) {
-    return await this.prisma.task.create({
+    const newTask = await this.prisma.task.create({
       data: {
         ...data,
         status: 'ACTIVE',
@@ -65,5 +70,9 @@ export class TrackerService {
         },
       },
     });
+
+    await this.cacheManager.set('curTask', newTask);
+
+    return newTask;
   }
 }
